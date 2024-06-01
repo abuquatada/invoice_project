@@ -16,43 +16,48 @@ from .models import Customers
 
 @api_view(['GET','POST','PUT','DELETE'])
 def Customers_view(request):
-    if request.method == 'GET':
-        customer_object = Customers.objects.all()
-        serializers_obj = customersserializer(customer_object,many=True)
-        return Response(serializers_obj.data)
-    
-
-    elif request.method == 'POST':
-        validated_data = request.data
-        serializers_obj=customersserializer(data=validated_data)
-
-        if serializers_obj.is_valid():
-            serializers_obj.save()
-            return Response({"message":"data posted successfully ","data":serializers_obj.data})
-        
-        else:
-            return Response(serializers_obj.errors)
+    try:
+        if request.method == 'GET':
+            customer_object = Customers.objects.all()
+            serializers_obj = customersserializer(customer_object,many=True)
+            return Response(serializers_obj.data)
         
 
-    elif request.method == 'PUT':
-        validated_data = request.data
-        customer_object = Customers.objects.get(CustomerID=validated_data['CustomerID'])
-        serializers_obj = customersserializer(customer_object,data=validated_data)
+        elif request.method == 'POST':
+            validated_data = request.data
+            serializers_obj=customersserializer(data=validated_data)
 
-        if serializers_obj.is_valid():
-            serializers_obj.save()
-            return Response({"message":"data updated successfully","data":serializers_obj.data})
-        
-        else:
-            return Response(serializers_obj.errors)
-        
+            if serializers_obj.is_valid():
+                serializers_obj.save()
+                return Response({"message":"data posted successfully ","data":serializers_obj.data})
+            
+            else:
+                return Response(serializers_obj.errors)
+            
 
-    elif request.method == 'DELETE':
-        delete = request.GET.get('delete')
-        if delete:
-            customer_object = Customers.objects.get(CustomerID=delete)
-            customer_object.delete()
-            return Response({"message":"data deleted successfully "})
+        elif request.method == 'PUT':
+            validated_data = request.data
+            customer_object = Customers.objects.get(CustomerID=validated_data['CustomerID'])
+            serializers_obj = customersserializer(customer_object,data=validated_data, partial = True)
+
+            if serializers_obj.is_valid():
+                serializers_obj.save()
+                return Response({"message":"data updated successfully","data":serializers_obj.data})
+            
+            else:
+                return Response(serializers_obj.errors)
+            
+
+        elif request.method == 'DELETE':
+            delete = request.GET.get('delete')
+            if delete:
+                customer_object = Customers.objects.get(CustomerID=delete)
+                customer_object.delete()
+                return Response({"message":"data deleted successfully "})
+    except Customers.DoesNotExist:
+        return Response({"error": "Customer not found"}, status=404)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
         
 
 
