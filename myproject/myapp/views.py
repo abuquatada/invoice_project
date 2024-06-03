@@ -8,7 +8,7 @@ from rest_framework import viewsets
 from .models import Customers
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
-# from django.contrib.auth import authenticate , login , logout
+ 
  
 
 
