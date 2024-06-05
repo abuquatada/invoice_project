@@ -17,6 +17,11 @@ class Customers(models.Model):
     Email = models.EmailField(unique=True)
     Phone = models.CharField(max_length=20)
 
+    DisplayField = ['CustomerID','CustomerName','ContactName','Address','City','PostalCode','Country','Email','Phone'] 
+
+    SearchField = ['CustomerID','CustomerName']
+    FilterField = ['City']
+
     class Meta:
         db_table = "customers"
 
@@ -29,6 +34,11 @@ class Products(models.Model):
     TaxRate = models.DecimalField(max_digits=10,decimal_places=4)
     StockQuantity = models.IntegerField()
 
+    DisplayField = ['ProductID','ProductName','Description','Price','TaxRate','StockQuantity']
+
+    SearchField = ['ProductID','ProductName']
+    FilterField = ['Price']
+    
 
 class Invoices(models.Model):
     InvoiceID = models.AutoField(primary_key=True)
@@ -37,6 +47,11 @@ class Invoices(models.Model):
     DueDate = models.DateTimeField()
     TotalAmount = models.FloatField()
     Status = models.CharField(max_length=15)
+
+    DisplayField = ['InvoiceID','CustomerID','InvoiceDate','DueDate','TotalAmount','Status']
+
+    SearchField = ['InvoiceID','CustomerID']
+    FilterField = ['Status']
 
 
 
@@ -49,6 +64,11 @@ class InvoiceItems(models.Model):
     TotalPrice = models.FloatField()
     TaxAmount = models.FloatField()
 
+    DisplayField = ['InvoiceItemID','InvoiceID','ProductID','Quantity','UnitPrice','TotalPrice','TaxAmount']
+
+    SearchField = ['InvoiceItemID','InvoiceID']
+    FilterField = ['Quantity']
+
 
 class Payments(models.Model):
     PaymentID = models.AutoField(primary_key=True)
@@ -56,6 +76,11 @@ class Payments(models.Model):
     PaymentDate = models.DateTimeField()
     Amount = models.FloatField()
     PaymentMethod = models.CharField(max_length=55)
+
+    DisplayField = ['PaymentID','InvoiceID','PaymentDate','Amount','PaymentMethod']
+
+    SearchField = ['PaymentID','InvoiceID']
+    FilterField = ['PaymentMethod']
 
 
 
@@ -65,6 +90,10 @@ class TaxRates(models.Model):
     Description = models.CharField(max_length=255)
     Rate = models.FloatField()
 
+    DisplayField = ['TaxRateID','Description','Rate']
+
+    SearchField = ['TaxRateID']
+    FilterField = ['Description']
 
 
 
@@ -119,13 +148,27 @@ class CoreUser(AbstractBaseUser,PermissionsMixin):
 
         objects = UserManager() 
 
+
+
+        DisplayField = ['UserID','name','UserName','RoleID']
+
+        SearchField = ['UserID','name']
+        # FilterField = ['PaymentMethod']
+
         class Meta:
             db_table = 'core_user'
+
+
 
 
 class Role(models.Model):
      role_id=models.AutoField(primary_key=True)
      role_type = models.CharField(max_length=255)
+
+     DisplayField = ['role_id','role_type']
+
+     SearchField = ['role_id','role_type']
+     FilterField = ['role_type']
 
      class Meta:
             db_table = 'role'

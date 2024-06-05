@@ -1,11 +1,10 @@
 from django.shortcuts import render
-from django.shortcuts import render
 from .models import * 
 from .serializer import *
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import viewsets
-from .models import Customers
+# from .models import Customers
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
  
@@ -108,7 +107,7 @@ def Products_view(request):
             except Exception as e:
                 return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            
+
 
         elif request.method == 'PUT':
             try:               
@@ -144,12 +143,7 @@ def Products_view(request):
             
  
             
-
-
-
-
-
-
+ 
 
 
 
@@ -222,11 +216,7 @@ def Invoices_view(request):
     
   
         
-
-
-
-
-
+ 
 
 
 
