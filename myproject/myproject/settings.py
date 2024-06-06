@@ -86,9 +86,9 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'invoice_database',
+        'NAME': 'inv_database',
         'USER': 'postgres',
-        'PASSWORD': 'Mdmusa@98019@',
+        'PASSWORD': 'Mehtab@123',
         'HOST': 'localhost',  
         'PORT': '5432',
     }

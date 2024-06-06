@@ -6,6 +6,29 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import viewsets
 from .models import Customers
+from rest_framework import status 
+from rest_framework.views import APIView
+
+
+
+# @api_view(['GET','POST','PUT','DELETE'])
+# def customer_query(request):
+#     if request.method == 'GET':
+#         customer_obj = Customers.objects.raw('select * from customers')
+#         print('\n\n\n',customer_obj,'\n\n\n')
+#         serializers_obj = customersserializer(customer_obj,many=True)
+#         serializer_data = serializers_obj.data
+#         return Response(serializer_data)
+    
+
+#     # elif request.method == 'POST':
+#     #     customer_obj = Customers.objects.create('')
+       
+
+
+   
+
+
 
  
 
@@ -14,52 +37,113 @@ from .models import Customers
 # Create your views here.
 
 
-@api_view(['GET','POST','PUT','DELETE'])
-def Customers_view(request):
-    try:
-        if request.method == 'GET':
-            customer_object = Customers.objects.all()
-            serializers_obj = customersserializer(customer_object,many=True)
-            return Response(serializers_obj.data)
+# @api_view(['GET','POST','PUT','DELETE'])
+# def Customers_view(request):
+#     try:
+#         if request.method == 'GET':
+#             customer_object = Customers.objects.all()
+#             serializers_obj = customersserializer(customer_object,many=True)
+#             return Response(serializers_obj.data)
         
 
-        elif request.method == 'POST':
+#         elif request.method == 'POST':
+#             validated_data = request.data
+#             serializers_obj=customersserializer(data=validated_data)
+
+#             if serializers_obj.is_valid():
+#                 serializers_obj.save()
+#                 return Response({"message":"data posted successfully ","data":serializers_obj.data})
+            
+#             else:
+#                 return Response(serializers_obj.errors)
+            
+
+#         elif request.method == 'PUT':
+#             validated_data = request.data
+#             customer_object = Customers.objects.get(CustomerID=validated_data['CustomerID'])
+#             serializers_obj = customersserializer(customer_object,data=validated_data, partial = True)
+
+#             if serializers_obj.is_valid():
+#                 serializers_obj.save()
+#                 return Response({"message":"data updated successfully","data":serializers_obj.data})
+            
+#             else:
+#                 return Response(serializers_obj.errors)
+            
+
+#         elif request.method == 'DELETE':
+#             delete = request.GET.get('delete')
+#             if delete:
+#                 customer_object = Customers.objects.get(CustomerID=delete)
+#                 customer_object.delete()
+#                 return Response({"message":"data deleted successfully "})
+#     except Customers.DoesNotExist:
+#         return Response({"error": "Customer not found"}, status=404)
+#     except Exception as e:
+#         return Response({"error": str(e)}, status=500)
+
+
+   
+        
+class CustomersView(APIView):
+    def get(self, request):
+        try:
+            customer_object = Customers.objects.all()
+            serializers_obj = customersserializer(customer_object, many=True)
+            return Response(serializers_obj.data)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+    def post(self, request):
+        try:
             validated_data = request.data
-            serializers_obj=customersserializer(data=validated_data)
+            serializers_obj = customersserializer(data=validated_data)
 
             if serializers_obj.is_valid():
                 serializers_obj.save()
-                return Response({"message":"data posted successfully ","data":serializers_obj.data})
-            
+                return Response({"message": "Data posted successfully", "data": serializers_obj.data}, status=status.HTTP_201_CREATED)
             else:
-                return Response(serializers_obj.errors)
-            
+                return Response(serializers_obj.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        elif request.method == 'PUT':
+
+
+
+    def put(self, request):
+        try:
             validated_data = request.data
             customer_object = Customers.objects.get(CustomerID=validated_data['CustomerID'])
-            serializers_obj = customersserializer(customer_object,data=validated_data, partial = True)
+            serializers_obj = customersserializer(customer_object, data=validated_data, partial=True)
 
             if serializers_obj.is_valid():
                 serializers_obj.save()
-                return Response({"message":"data updated successfully","data":serializers_obj.data})
-            
+                return Response({"message": "Data updated successfully", "data": serializers_obj.data}, status=status.HTTP_200_OK)
             else:
-                return Response(serializers_obj.errors)
-            
+                return Response(serializers_obj.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Customers.DoesNotExist:
+            return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        elif request.method == 'DELETE':
+
+
+
+    def delete(self, request):
+        try:
             delete = request.GET.get('delete')
             if delete:
                 customer_object = Customers.objects.get(CustomerID=delete)
                 customer_object.delete()
-                return Response({"message":"data deleted successfully "})
-    except Customers.DoesNotExist:
-        return Response({"error": "Customer not found"}, status=404)
-    except Exception as e:
-        return Response({"error": str(e)}, status=500)
-        
-
+                return Response({"message": "Data deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+            return Response({"error": "CustomerID not provided"}, status=status.HTTP_400_BAD_REQUEST)
+        except Customers.DoesNotExist:
+            return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
