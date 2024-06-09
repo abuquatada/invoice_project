@@ -47,6 +47,7 @@ def logout_view(request):
 
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def Customers_view(request):
     if request.method == 'GET':
 
